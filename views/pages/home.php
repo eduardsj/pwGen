@@ -8,9 +8,9 @@
         </fieldset>
         <fieldset class="checkBox">
 
-            <input type="checkbox" name="number" value="number" /> Password include 0 or 1 <br />
-            <input type="checkbox" name="letter" value="letter" /> Password include o or O<br />
-            <input type="checkbox" name="exclude" value="exclude" /> Definitely have l letter<br />
+            <input type="checkbox" name="number" value="number" /> Password contains numbers <br />
+            <input type="checkbox" name="lettersCapital" value="lettersCapital" /> Password contains capital letters<br />
+            <input type="checkbox" name="letters" value="letters" /> Password contains letters<br />
 
         </fieldset>
 

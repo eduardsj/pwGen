@@ -3,49 +3,48 @@
 class Password {
 
     public static function generatePassword() {
-        $alpha = "abcdefghijkmnpqrstuvwxyz";
-        $chars = $alpha . strtoupper($alpha) . 'L';
-        $charLenght = strlen($chars);
+        $letters = 'qwertyuiopasdfghjklzxcvbnm';
+        $capitalLetters = strtoupper($letters);
+        $numbers = '1234567890';
+        $chars = '';
         $password = '';
         $desiredLength = htmlentities($_POST['passwordLenght']);
         $numberOption = htmlentities($_POST['number']);
-        $lettersOption = htmlentities($_POST['letter']);
-        $lLetter = htmlentities($_POST['exclude']);
+        $lettersCapitalOption = htmlentities($_POST['lettersCapital']);
+        $lettersOption = htmlentities($_POST['letters']);
         if (!empty($desiredLength)) {
             
-            //add user picked symbols
-            if (!empty($numberOption)) {
-                $chars .= '10';
+            //add options requuired symbols sets
+            if (!empty($numberOption) && $numberOption === 'number') {
+                $chars .= $numbers;
             }
-            if (!empty($lettersOption)) {
-                $chars .= 'oO';
+            if (!empty($lettersCapitalOption) && $lettersCapitalOption === 'lettersCapital') {
+                $chars .= $capitalLetters;
             }
-            if (!empty($lLetter)) {
-                $chars .= 'l';
+            if (!empty($lettersOption) && $lettersOption === 'letters') {
+                $chars .= $numbers;
             }
+            
+            $chars = str_shuffle($chars);
+            
+            $charLenght = strlen($chars);
             
             //Pick random string from all available symbols
             for ($i = 0; $i < $desiredLength; $i++) {
                 $randomElPos = mt_rand(0, $charLenght - 1);
                 $password .= substr($chars, $randomElPos, 1);
                 $chars = substr_replace($chars, '', $randomElPos, 1);
-            }
+            }            
             
-            //force user picked letter input if not selected before
-            if (!empty($numberOption) && !stripos($password, '1')) {
-                $password = substr_replace($password, 1, 0, 1);
+            //Force password string contain user picked option related characters if didnt contain
+            if (!empty($numberOption) && $numberOption === 'number' && strpbrk($password, $numbers) === false){
+                $password = substr_replace($password, substr($numbers, mt_rand(0, sizeof($numbers) - 1), 1) , 0, 1);
             }
-            if (!empty($numberOption) && !stripos($password, '0')) {
-                $password = substr_replace($password, 0, 0, 1);
+            if (!empty($lettersCapitalOption) && $lettersCapitalOption === 'lettersCapital' && strpbrk($password, $capitalLetters) === false){                
+                $password = substr_replace($password, substr($capitalLetters, mt_rand(0, sizeof($capitalLetters) - 1), 1) , 1, 1);
             }
-            if (!empty($lettersOption) && !stripos($password, 'o')) {
-                $password = substr_replace($password, 'o', 1, 1);
-            }
-            if (!empty($lettersOption) && !stripos($password, 'O')) {
-                $password = substr_replace($password, 'o', 1, 1);
-            }
-            if (!empty($lLetter) && !stripos($password, 'l')) {
-                $password = substr_replace($password, 'l', 2, 1);
+            if (!empty($lettersOption) && $lettersOption === 'letters' && strpbrk($password, $letters) === false){  
+                $password = substr_replace($password, substr($letters, mt_rand(0, sizeof($letters) - 1), 1) , 2, 1);
             }
             
             //final string shufling 
